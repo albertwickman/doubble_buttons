@@ -88,6 +88,28 @@ class _MyHomePageState extends State<MyHomePage> {
               CustomButton()._buildButton('Forsæt', Icons.search, CustomButton().primaryColor, true, true),
               const Divider(height: 40, thickness: 1),
 
+              const Text(
+                'IconButtons',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomIconButton()._buildButton(Icons.close, CustomIconButton().whiteColor),
+                  const SizedBox(width: 12),
+
+                  CustomIconButton()._buildButton(Icons.undo_rounded, CustomIconButton().greyColor),
+                  const SizedBox(width: 12),
+
+                  CustomIconButton()._buildButton(Icons.favorite, CustomIconButton().secondaryColor),
+                ],
+              ),
+              const SizedBox(height: 12),
             ],
           ),
         ),
@@ -100,13 +122,13 @@ abstract class BaseButton {
   final Color primaryColor = const Color(0xff1c0b4c);
   final Color secondaryColor = const Color(0xFFD1A6FF);
   final Color whiteColor = const Color(0xFFFFFFFF);
+  final Color greyColor = const Color(0xFFE1E1E1);
   final Color disabledColor = const Color(0xFF9F9FB0).withOpacity(1);
 
   late final bool isRound;
   late final bool isEnabled;
 }
 
-// TODO add outline to the transparent button
 class CustomButton extends BaseButton {
 
   // disabled color will also be used if onPressed: null
@@ -148,7 +170,6 @@ class CustomButton extends BaseButton {
                 color: primaryColor,
               ),
             ),
-
           ],
         ),
       ),
@@ -158,11 +179,27 @@ class CustomButton extends BaseButton {
 
 class CustomIconButton extends BaseButton {
 
-  ElevatedButton _buildButton(String labelText) {
-    return ElevatedButton.icon(
+  SizedBox _buildButton(IconData iconData, Color backColor) {
+    return SizedBox(
+      width: 100,
+      height: 40,
+      child: MaterialButton(
         onPressed: () {},
-        icon: const Icon(Icons.add),
-      label: Text(labelText),
+        color: backColor,
+          elevation: 0,
+        splashColor: Colors.grey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(
+            width: 2,
+            color: greyColor,
+          )
+        ),
+        child: Icon(
+            iconData,
+          color: (backColor == secondaryColor ? whiteColor : Colors.black),
+        )
+      ),
     );
   }
 }
