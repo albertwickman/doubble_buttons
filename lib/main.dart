@@ -1,8 +1,4 @@
-import 'dart:html';
-import 'dart:js';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Albert\'s Doubble Test',
+      title: 'Albert\'s Doubble Buttons',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blueGrey,
       ),
-      home: const MyHomePage(title: 'Albert\'s Doubble Test'),
+      home: const MyHomePage(title: 'Albert\'s Doubble Buttons'),
     );
   }
 }
@@ -56,6 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 12),
 
+              // Here you can try and change the parameters of the buttons.
+              // IconData(0) is used as a null icon.
               CustomButton()._buildButton('Forsæt', const IconData(0), CustomButton().primaryColor, false, true),
               const SizedBox(height: 12),
 
@@ -69,9 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 12),
 
               CustomButton()._buildButton('Disabled', const IconData(0), CustomButton().primaryColor, true, false),
-              const Divider(height: 40, thickness: 1),
+              const Divider(height: 60, thickness: 1.5),
+
               const Text(
-                'Buttons with icons passed by parameter',
+                'Pass in icons by parameter',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24
@@ -79,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 12),
 
+              // Here you can try and change the parameters of the buttons.
               CustomButton()._buildButton('Forsæt', Icons.search, CustomButton().primaryColor, false, true),
               const SizedBox(height: 12),
 
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 12),
 
               CustomButton()._buildButton('Forsæt', Icons.search, CustomButton().primaryColor, true, true),
-              const Divider(height: 40, thickness: 1),
+              const Divider(height: 60, thickness: 1.5),
 
               const Text(
                 'IconButtons',
@@ -100,13 +100,13 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomIconButton()._buildButton(Icons.close, CustomIconButton().whiteColor),
+                  CustomIconButton()._buildButton(Icons.close, CustomIconButton().whiteColor, false),
                   const SizedBox(width: 12),
 
-                  CustomIconButton()._buildButton(Icons.undo_rounded, CustomIconButton().greyColor),
+                  CustomIconButton()._buildButton(Icons.undo_rounded, CustomIconButton().greyColor, true),
                   const SizedBox(width: 12),
 
-                  CustomIconButton()._buildButton(Icons.favorite, CustomIconButton().secondaryColor),
+                  CustomIconButton()._buildButton(Icons.favorite, CustomIconButton().secondaryColor, false),
                 ],
               ),
               const SizedBox(height: 12),
@@ -118,6 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// These colors could also be placed in the theme data.
+// I went with creating widget building methods this time.
 abstract class BaseButton {
   final Color primaryColor = const Color(0xff1c0b4c);
   final Color secondaryColor = const Color(0xFFD1A6FF);
@@ -125,14 +127,13 @@ abstract class BaseButton {
   final Color greyColor = const Color(0xFFE1E1E1);
   final Color disabledColor = const Color(0xFF9F9FB0).withOpacity(1);
 
-  late final bool isRound;
   late final bool isEnabled;
+  late final IconData iconData;
 }
 
-class CustomButton extends BaseButton {
 
-  // disabled color will also be used if onPressed: null
-  @override
+// Creates button widgets for regular buttons with passable icons
+class CustomButton extends BaseButton {
   SizedBox _buildButton(String labelText, IconData iconData, Color backColor, bool isTransparent, bool isEnabled) {
     return SizedBox(
       height: 50,
@@ -140,7 +141,6 @@ class CustomButton extends BaseButton {
       child: CupertinoButton(
         onPressed: isEnabled ?
             () {
-              print('Tapped');
             } : null,
         disabledColor: disabledColor,
         color: (isTransparent ? backColor.withOpacity(0.01) : backColor),
@@ -152,10 +152,9 @@ class CustomButton extends BaseButton {
             (iconData != const IconData(0)) ?
             Icon(iconData, color: (backColor == primaryColor || backColor == secondaryColor ? whiteColor : primaryColor)) : Container(),
 
-
             const SizedBox(width: 4),
 
-            (backColor != Colors.white) ?
+            (backColor != whiteColor) ?
             Text(
               labelText,
               textAlign: TextAlign.center,
@@ -177,17 +176,19 @@ class CustomButton extends BaseButton {
   }
 }
 
-class CustomIconButton extends BaseButton {
 
-  SizedBox _buildButton(IconData iconData, Color backColor) {
+// Creates button widgets for icon buttons
+class CustomIconButton extends BaseButton {
+  SizedBox _buildButton(IconData iconData, Color backColor, bool isRound) {
     return SizedBox(
-      width: 100,
+      width: isRound ? 50 : 100,
       height: 40,
       child: MaterialButton(
         onPressed: () {},
         color: backColor,
           elevation: 0,
-        splashColor: Colors.grey,
+          disabledColor: disabledColor,
+        splashColor: greyColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(
